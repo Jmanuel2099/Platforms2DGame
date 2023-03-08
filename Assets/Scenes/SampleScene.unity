@@ -627,6 +627,8 @@ MonoBehaviour:
   movementSpeed: 2
   jumpSpeed: 3.3
   isBetterJump: 1
+  spriteRenderer: {fileID: 359667456}
+  animator: {fileID: 359667455}
 --- !u!1 &434488984
 GameObject:
   m_ObjectHideFlags: 0

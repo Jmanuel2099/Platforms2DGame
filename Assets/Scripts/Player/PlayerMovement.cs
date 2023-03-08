@@ -15,6 +15,10 @@ public class PlayerMovement : MonoBehaviour
     private float lowJumpMultiplier = 1f;
     private float fallJumpMultiplier = 0.5f;
 
+    [Header("Animations")]
+    [SerializeField] private SpriteRenderer spriteRenderer;//help us with animations when we want to turn 
+    [SerializeField] private Animator animator;
+
     // Start is called before the first frame update
     private void Start()
     {
@@ -32,19 +36,35 @@ public class PlayerMovement : MonoBehaviour
         if (Input.GetKey("d") || Input.GetKey("right"))
         {
             rb2d.velocity = new Vector2(movementSpeed, rb2d.velocity.y);
+            spriteRenderer.flipX = false;
+            animator.SetBool("isRun", true);
         }
         else if (Input.GetKey("a") || Input.GetKey("left"))
         {
             rb2d.velocity = new Vector2(-movementSpeed, rb2d.velocity.y);
+            spriteRenderer.flipX = true;
+            animator.SetBool("isRun", true);
         }
         else
         {
             rb2d.velocity = new Vector2(0, rb2d.velocity.y);
+            animator.SetBool("isRun", false);
         }
 
         if ((Input.GetKey("w") || Input.GetKey("up")) && CheckGround.isGrounded)
         {
             rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
+        }
+
+        if (!CheckGround.isGrounded)
+        {
+            animator.SetBool("isJump", true);
+            animator.SetBool("isRun", false);
+        }
+        if (CheckGround.isGrounded)
+        {
+            animator.SetBool("isJump", false);
+            // animator.SetBool("isRun", true);
         }
 
         if (isBetterJump)
