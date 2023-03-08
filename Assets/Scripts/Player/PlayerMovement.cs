@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] private float jumpSpeed;
+    [SerializeField] private bool isBetterJump;
+    private float lowJumpMultiplier = 1f;
+    private float fallJumpMultiplier = 0.5f;
 
     // Start is called before the first frame update
     private void Start()
@@ -34,14 +37,33 @@ public class PlayerMovement : MonoBehaviour
         {
             rb2d.velocity = new Vector2(-movementSpeed, rb2d.velocity.y);
         }
-        else if ((Input.GetKey("w") || Input.GetKey("up")) && CheckGround.isGrounded)
-        {
-            rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
-        }
         else
         {
             rb2d.velocity = new Vector2(0, rb2d.velocity.y);
         }
+
+        if ((Input.GetKey("w") || Input.GetKey("up")) && CheckGround.isGrounded)
+        {
+            rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
+        }
+
+        if (isBetterJump)
+        {
+            JumpBetter();
+        }
+    }
+
+    private void JumpBetter()
+    {
+        if (rb2d.velocity.y < 0)
+        {
+            rb2d.velocity += Vector2.up * Physics2D.gravity.y * (fallJumpMultiplier) * Time.deltaTime;
+        }
+        if (rb2d.velocity.y > 0 && (!Input.GetKey("up") || Input.GetKey("w") ))
+        {
+            rb2d.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier) * Time.deltaTime;
+        }
+
     }
 
 }
