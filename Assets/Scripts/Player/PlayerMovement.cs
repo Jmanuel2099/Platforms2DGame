@@ -11,9 +11,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] private float jumpSpeed;
-    [SerializeField] private bool isBetterJump;
-    private float lowJumpMultiplier = 1f;
-    private float fallJumpMultiplier = 0.5f;
+    // [SerializeField] private bool isBetterJump;
+    // private float lowJumpMultiplier = 1f;
+    // private float fallJumpMultiplier = 0.5f;
 
     [Header("Animations")]
     [SerializeField] private SpriteRenderer spriteRenderer;//help us with animations when we want to turn 
@@ -25,11 +25,16 @@ public class PlayerMovement : MonoBehaviour
         rb2d = GetComponent<Rigidbody2D>();
     }
 
-    //FixedUpdate method is mainly used for physics change
-    private void FixedUpdate()
+    private void Update()
     {
         Move();
     }
+
+    //FixedUpdate method is mainly used for physics change
+    // private void FixedUpdate()
+    // {
+    //     Move();
+    // }
 
     private void Move()
     {
@@ -55,7 +60,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
         }
-
         if (!CheckGround.isGrounded)
         {
             animator.SetBool("isJump", true);
@@ -64,27 +68,38 @@ public class PlayerMovement : MonoBehaviour
         if (CheckGround.isGrounded)
         {
             animator.SetBool("isJump", false);
-            // animator.SetBool("isRun", true);
+            animator.SetBool("Falling", false);
         }
 
-        if (isBetterJump)
+        if (isFalling())
         {
-            JumpBetter();
+            animator.SetBool("Falling", true);
+        }else if(!isFalling())
+        {
+            animator.SetBool("Falling", false);
         }
+        // if (isBetterJump)
+        // {
+        //     JumpBetter();
+        // }
     }
 
-    private void JumpBetter()
+    private bool isFalling()
     {
-        if (rb2d.velocity.y < 0)
-        {
-            rb2d.velocity += Vector2.up * Physics2D.gravity.y * (fallJumpMultiplier) * Time.deltaTime;
-        }
-        if (rb2d.velocity.y > 0 && (!Input.GetKey("up") || Input.GetKey("w") ))
-        {
-            rb2d.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier) * Time.deltaTime;
-        }
-
+        return rb2d.velocity.y < 0;
     }
+
+    // private void JumpBetter()
+    // {
+    //     if (rb2d.velocity.y < 0)
+    //     {
+    //         rb2d.velocity += Vector2.up * Physics2D.gravity.y * (fallJumpMultiplier) * Time.deltaTime;
+    //     }
+    //     if (rb2d.velocity.y > 0 && (!Input.GetKey("up") || Input.GetKey("w")))
+    //     {
+    //         rb2d.velocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier) * Time.deltaTime;
+    //     }
+    // }
 
 }
 
