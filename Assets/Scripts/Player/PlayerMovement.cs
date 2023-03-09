@@ -11,6 +11,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] private float jumpSpeed;
+    [SerializeField] private float doubleJumpSpeed;
+
+    private bool canDoubleJump;
     // [SerializeField] private bool isBetterJump;
     // private float lowJumpMultiplier = 1f;
     // private float fallJumpMultiplier = 0.5f;
@@ -27,14 +30,14 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        Move();
+        makeJump();
     }
 
     //FixedUpdate method is mainly used for physics change
-    // private void FixedUpdate()
-    // {
-    //     Move();
-    // }
+    private void FixedUpdate()
+    {
+        Move();
+    }
 
     private void Move()
     {
@@ -55,11 +58,33 @@ public class PlayerMovement : MonoBehaviour
             rb2d.velocity = new Vector2(0, rb2d.velocity.y);
             animator.SetBool("isRun", false);
         }
+        // if (isBetterJump)
+        // {
+        //     JumpBetter();
+        // }
+    }
 
-        if ((Input.GetKey("w") || Input.GetKey("up")) && CheckGround.isGrounded)
+    private void makeJump()
+    {
+        if (Input.GetKey("w") || Input.GetKey("up")) 
         {
-            rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
+            if (CheckGround.isGrounded)
+            {
+                canDoubleJump = true;
+                rb2d.velocity = new Vector2(rb2d.velocity.x, jumpSpeed);
+            }
+            else
+            {
+                if ((Input.GetKeyDown("w") || Input.GetKeyDown("up")) && canDoubleJump)
+                {
+                    animator.SetBool("DoubleJump", true);
+                    rb2d.velocity = new Vector2(rb2d.velocity.x, doubleJumpSpeed);
+                    canDoubleJump = false;
+                }    
+            }
+            
         }
+
         if (!CheckGround.isGrounded)
         {
             animator.SetBool("isJump", true);
@@ -67,6 +92,7 @@ public class PlayerMovement : MonoBehaviour
         }
         if (CheckGround.isGrounded)
         {
+            animator.SetBool("DoubleJump", false);
             animator.SetBool("isJump", false);
             animator.SetBool("Falling", false);
         }
@@ -74,14 +100,11 @@ public class PlayerMovement : MonoBehaviour
         if (isFalling())
         {
             animator.SetBool("Falling", true);
-        }else if(!isFalling())
+        }
+        else if (!isFalling())
         {
             animator.SetBool("Falling", false);
         }
-        // if (isBetterJump)
-        // {
-        //     JumpBetter();
-        // }
     }
 
     private bool isFalling()
