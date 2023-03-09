@@ -4,11 +4,17 @@ using UnityEngine;
 
 public class FruitManager : MonoBehaviour
 {
-    public void IsAllFruitsCollected()
+    public static bool isAllFruitsCollected = false;
+    private void Update()
     {
-        if (transform.childCount == 1)
+        AllFruitsCollected();
+    }
+
+    public void AllFruitsCollected()
+    {
+        if (transform.childCount == 0)
         {
-            Debug.Log("level complete");
+            isAllFruitsCollected = true;
         }
     }
 }
